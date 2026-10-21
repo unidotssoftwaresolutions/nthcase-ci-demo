@@ -1,0 +1,58 @@
+# Deploy the shop to GitHub Pages, then gate the pipeline on an NthCase run.
+# `nth trigger --wait` exits 0 when the run passes and 1 when it fails, so a failing scenario fails this job.
+name: Deploy and test
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Stamp the build
+        run: sed -i "s/content=\"dev\"/content=\"${GITHUB_SHA}\"/" site/index.html
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
+
+  e2e:
+    name: NthCase end-to-end test
+    needs: deploy
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://unidotssoftwaresolutions.github.io/nthcase-ci-demo/
+      SCENARIO_ID: 719015de-fff0-47eb-8797-a511cb14f1ab  # "Add the desk lamp to the cart"
+    steps:
+      - name: Wait until this commit is live
+        run: |
+          for i in $(seq 1 30); do
+            if curl -fsS -H 'Cache-Control: no-cache' "$SITE_URL?v=$GITHUB_SHA" | grep -q "$GITHUB_SHA"; then
+              echo "Live: $GITHUB_SHA"; exit 0
+            fi
+            sleep 10
+          done
+          echo "The deployed page never showed $GITHUB_SHA"; exit 1
+      - name: Add to cart on the live site (NthCase)
+        env:
+          NTH_API_KEY: ${{ secrets.NTH_API_KEY }}
+        run: npx --yes @nthcase/cli@0.1.5 trigger "$SCENARIO_ID" --wait --timeout 900
