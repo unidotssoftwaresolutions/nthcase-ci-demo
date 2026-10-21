@@ -1,7 +1,11 @@
 let count = 0;
 
-document.getElementById("add-to-cart").addEventListener("click", () => {
+const button = document.getElementById("add-to-cart");
+const badge = document.getElementById("cart-counter");
+const message = document.getElementById("cart-message");
+
+button.addEventListener("click", () => {
   count += 1;
-  document.getElementById("cart-count").textContent = `Cart (${count})`;
-  document.getElementById("cart-message").textContent = "Added to cart";
+  badge.textContent = `Cart (${count})`;
+  message.textContent = "Added to cart";
 });
