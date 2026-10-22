@@ -55,4 +55,4 @@ jobs:
       - name: Add to cart on the live site (NthCase)
         env:
           NTH_API_KEY: ${{ secrets.NTH_API_KEY }}
-        run: npx --yes @nthcase/cli@0.1.5 trigger "$SCENARIO_ID" --wait --timeout 900
+        run: npx --yes @nthcase/cli@0.1.6 trigger "$SCENARIO_ID" --wait --timeout 900
