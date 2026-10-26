@@ -365,8 +365,6 @@ button:disabled { cursor: default; }
 /* Android draws the card's name and price at the font's own line height, not the type scale's. */
 .product-name { margin-top: 10px; line-height: 21px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .product-card .label-large { margin-top: 2px; line-height: 19px; }
-/* Release 2: prices on the cards in amber. */
-.product-card .label-large { color: #b45309; font-weight: 700; }
 .products-empty { margin-top: 48px; text-align: center; }
 
 /* Product details */
