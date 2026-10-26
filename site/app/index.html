@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>NthCase Demo</title>
+  <link rel="icon" href="nthcase_mark.png">
+  <link rel="stylesheet" href="app.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <!-- The web twin of NthCase Demo (android-demo-app / ios-demo-app in GuruAI). One page; the hash picks the screen.
+       Each screen is a <template> below, cloned into #screen when it opens, so only the open screen's ids exist. -->
+  <div class="phone">
+    <header class="toolbar" hidden>
+      <button type="button" class="icon-button nav-back" aria-label="Back" title="Back" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true" data-icon="arrow_back"></svg>
+      </button>
+      <h1 class="toolbar-title"></h1>
+      <button type="button" id="cart_action" class="icon-button cart-action" aria-label="Cart" title="Cart" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true" data-icon="ic_bag"></svg>
+        <span id="cart_count" class="cart-count" hidden></span>
+      </button>
+      <button type="button" id="action_sign_out" class="icon-button" aria-label="Sign out" title="Sign out" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true" data-icon="ic_sign_out"></svg>
+      </button>
+    </header>
+    <main id="screen" class="screen-host"></main>
+  </div>
+
+  <noscript><p class="noscript">NthCase Demo needs JavaScript.</p></noscript>
+
+  <template id="screen-signin">
+    <div class="screen scroll">
+      <div class="signin">
+        <img id="brand_mark" class="brand-mark" src="nthcase_mark.png" width="88" height="88"
+             alt="NthCase Demo logo" aria-label="NthCase Demo logo">
+        <h1 id="app_title" class="headline-medium" tabindex="-1">NthCase Demo</h1>
+        <p id="store_tagline" class="body-large muted">A small shop to try NthCase on</p>
+
+        <form class="signin-form" novalidate>
+          <h2 class="title-large">Sign in</h2>
+          <div class="field">
+            <input id="email_input" type="email" placeholder=" " aria-label="E-mail" autocomplete="email"
+                   autocapitalize="off" spellcheck="false" enterkeyhint="next">
+            <label for="email_input">E-mail</label>
+          </div>
+          <div class="field has-end">
+            <input id="password_input" type="password" placeholder=" " aria-label="Password"
+                   autocomplete="current-password" enterkeyhint="done">
+            <label for="password_input">Password</label>
+            <button type="button" class="end-icon password-toggle" aria-label="Show password" aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true" data-icon="visibility"></svg>
+            </button>
+          </div>
+          <p id="sign_in_error" class="body-medium error-text" role="status" aria-label="Wrong e-mail or password."
+             hidden>Wrong e-mail or password.</p>
+          <button id="sign_in_button" type="submit" class="filled-button wide tall" aria-label="Sign in">Sign in</button>
+        </form>
+
+        <section id="demo_account" class="demo-card">
+          <h3 class="title-small">Demo account</h3>
+          <p id="demo_account_details" class="body-medium" role="note"
+             aria-label="Demo account. E-mail: demo@nthcase.com. Password: demo1234.">E-mail: demo@nthcase.com<br>Password: demo1234</p>
+          <button id="use_demo_account" type="button" class="text-button" aria-label="Use demo account">Use demo account</button>
+        </section>
+      </div>
+    </div>
+  </template>
+
+  <template id="screen-products">
+    <div class="screen">
+      <div class="field dense has-start has-end search-field">
+        <svg class="start-icon" viewBox="0 0 24 24" aria-hidden="true" data-icon="ic_search"></svg>
+        <input id="search_input" type="text" placeholder=" " aria-label="Search products" autocomplete="off"
+               spellcheck="false" enterkeyhint="search">
+        <label for="search_input">Search products</label>
+        <button type="button" class="end-icon clear-text" aria-label="Clear text" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" data-icon="cancel"></svg>
+        </button>
+      </div>
+      <div class="scroll grow">
+        <ul id="product_list" class="product-grid" aria-label="Fernwood Goods"></ul>
+        <p id="products_empty" class="body-large muted products-empty" role="status"
+           aria-label="No products match your search." hidden>No products match your search.</p>
+      </div>
+    </div>
+  </template>
+
+  <template id="screen-detail">
+    <div class="screen">
+      <div class="scroll grow">
+        <div class="detail">
+          <svg id="detail_image" class="art detail-image" viewBox="0 0 120 120" role="img"></svg>
+          <h2 id="detail_name" class="headline-small"></h2>
+          <p id="detail_price" class="title-large primary-text"></p>
+          <p id="detail_description" class="body-large muted detail-description"></p>
+          <p class="title-small quantity-label">Quantity</p>
+          <div class="stepper">
+            <button type="button" id="qty_decrease" class="outlined-icon-button" aria-label="Decrease quantity">
+              <svg viewBox="0 0 24 24" aria-hidden="true" data-icon="ic_remove"></svg>
+            </button>
+            <output id="qty_value" class="title-large qty-value" aria-label="Quantity 1">1</output>
+            <button type="button" id="qty_increase" class="outlined-icon-button" aria-label="Increase quantity">
+              <svg viewBox="0 0 24 24" aria-hidden="true" data-icon="ic_add"></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-bar">
+        <div class="snackbar-host" role="status"></div>
+        <button type="button" id="add_to_cart" class="filled-button wide tall" aria-label="Add to cart">
+          <svg class="button-icon" viewBox="0 0 24 24" aria-hidden="true" data-icon="ic_bag"></svg>Add to cart
+        </button>
+      </div>
+    </div>
+  </template>
+
+  <template id="snackbar">
+    <div class="snackbar">
+      <span id="snackbar_text" class="body-medium">Added to cart</span>
+      <button type="button" id="snackbar_action" class="snackbar-action" aria-label="View cart">View cart</button>
+    </div>
+  </template>
+
+  <template id="screen-cart">
+    <div class="screen">
+      <div id="cart_content" class="screen">
+        <div class="scroll grow">
+          <ul id="cart_lines" class="cart-lines"></ul>
+        </div>
+        <section id="cart_summary" class="cart-summary">
+          <div class="total-row">
+            <span class="title-medium" aria-hidden="true">Total</span>
+            <output id="cart_total" class="headline-small"></output>
+          </div>
+          <button type="button" id="checkout_button" class="filled-button wide tall" aria-label="Checkout">Checkout</button>
+          <button type="button" id="continue_shopping" class="text-button wide" aria-label="Continue shopping">Continue shopping</button>
+        </section>
+      </div>
+      <div id="cart_empty" class="scroll grow" hidden>
+        <div class="centered-body">
+          <svg class="art empty-art" viewBox="0 0 120 120" role="img" aria-label="An empty shopping bag"
+               data-art="art_empty_cart"></svg>
+          <h2 id="cart_empty_title" class="title-large">Your cart is empty</h2>
+          <p class="body-large muted">Pick something you like from the products.</p>
+          <button type="button" id="browse_products" class="filled-button" aria-label="Browse products">Browse products</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="screen-order-placed">
+    <div class="screen scroll">
+      <div class="centered-body order-placed">
+        <svg class="art order-art" viewBox="0 0 120 120" role="img" aria-label="A check mark"
+             data-art="art_order_placed"></svg>
+        <h1 id="order_placed_title" class="headline-medium" tabindex="-1">Order placed</h1>
+        <p id="order_placed_message" class="body-large muted">Thank you! Your order is confirmed and on its way.</p>
+        <button type="button" id="back_to_products" class="filled-button" aria-label="Back to products">Back to products</button>
+      </div>
+    </div>
+  </template>
+</body>
+</html>
